@@ -55,17 +55,20 @@ namespace lidar
 /************************************************************************/
 inline sensor_msgs::PointCloud2 toRosMsg(const LidarPointCloudMsg& rs_msg)
 {
+  sensor_msgs::PointCloud2 ros_msg;
+  #ifdef POINT_TYPE_XYZI
   // remove NaN points
   pcl::PointCloud<PointT> pc_;
   std::vector<int> pc_nan_idx;
   pcl::removeNaNFromPointCloud(*rs_msg.point_cloud_ptr, pc_, pc_nan_idx);
-
-  sensor_msgs::PointCloud2 ros_msg;
-  // pcl::toROSMsg(*rs_msg.point_cloud_ptr, ros_msg);
+  #elif POINT_TYPE_XYZIRT
+  pcl::toROSMsg(*rs_msg.point_cloud_ptr, ros_msg);
+  #endif
   pcl::toROSMsg(pc_, ros_msg);
   ros_msg.header.stamp = ros_msg.header.stamp.fromSec(rs_msg.timestamp);
   ros_msg.header.frame_id = rs_msg.frame_id;
   ros_msg.header.seq = rs_msg.seq;
+  ros_msg.is_dense = true;
   return std::move(ros_msg);
 }
 inline PacketMsg toRsMsg(const LidarType& lidar_type, const PktType& pkt_type,
