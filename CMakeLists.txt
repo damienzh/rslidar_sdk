@@ -23,6 +23,11 @@ add_definitions(-std=c++14)
 add_compile_options(-Wall)
 
 #========================
+#  Enable Transformation
+#========================
+set(ENABLE_TRANSFORM ON)
+
+#========================
 # Dependencies Setup
 #========================
 #ROS#
